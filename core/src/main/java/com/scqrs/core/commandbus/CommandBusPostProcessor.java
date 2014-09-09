@@ -3,8 +3,6 @@ package com.scqrs.core.commandbus;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -13,7 +11,7 @@ import com.scqrs.core.annotation.CommandHandler;
 
 public class CommandBusPostProcessor implements BeanPostProcessor {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+//    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
