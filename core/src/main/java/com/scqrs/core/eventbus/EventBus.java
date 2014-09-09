@@ -28,7 +28,6 @@ import com.scqrs.core.util.EventUtils;
 public class EventBus {
     
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
-//    protected int bufferSize = 1024;
     protected ConcurrentMap<Class<?>, List<RegistedEventHandler>> handlesMap = Maps.newConcurrentMap();
     protected ConcurrentMap<Class<?>, Disruptor<BaseEvent>> disruptorPool = Maps.newConcurrentMap();
 
@@ -67,7 +66,7 @@ public class EventBus {
 
     protected Disruptor<BaseEvent> createDisruptor(Class<?> eventClass, List<RegistedEventHandler> registedEventHandlers) {
         WaitStrategy waitStrategy = new BlockingWaitStrategy();
-        // load the custmized event bufferSize.
+        // load the customized event bufferSize.
         int bufferSize = EventUtils.getEventBufferSize(eventClass);
         Disruptor<BaseEvent> disruptor =new Disruptor<BaseEvent>(new BaseEventFactory(), 
                 bufferSize, Executors.newCachedThreadPool(), ProducerType.SINGLE, waitStrategy);

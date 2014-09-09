@@ -64,17 +64,6 @@ public class EventBusPostProcessor implements BeanPostProcessor {
 
         return bean;
     }
-    
-//    private EventType getEventType(Class<?> type) {
-//        Annotation[] annotations = type.getAnnotations();
-//        for(Annotation annotation : annotations) {
-//            if (annotation.annotationType().equals(Event.class)) {
-//                Event event = (Event)annotation;
-//                return event.type();
-//            }
-//        }
-//        return null;
-//    }
 
     @Autowired
     private EventBus eventBus;

@@ -3,7 +3,7 @@ package com.scqrs.sample.event;
 import com.scqrs.core.annotation.Event;
 import com.scqrs.core.annotation.EventType;
 
-@Event(type = EventType.ORDER)
+@Event(type = EventType.ORDER, bufferSize = 32)
 public class ByeEvent {
 
 

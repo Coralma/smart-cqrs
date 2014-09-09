@@ -20,9 +20,9 @@
 
 	<context:spring-configured />
 	
-	<context:component-scan base-package="com.scqrs.sample.event"></context:component-scan>
-	
-	<bean id="eventBus" class="com.scqrs.core.eventbus.EventBus"/>
-	<bean id="eventBusPostProcessor" class="com.scqrs.core.eventbus.EventBusPostProcessor"/>
+	<context:component-scan base-package="com.scqrs.sample.command"/>
+
+	<bean id="commandBus" class="com.scqrs.core.commandbus.CommandBus"/>
+	<bean id="commandBusPostProcessor" class="com.scqrs.core.commandbus.CommandBusPostProcessor"/>
 	
 </beans>
