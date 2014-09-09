@@ -1,17 +1,19 @@
 package com.scqrs.sample.event;
 
 import com.scqrs.core.annotation.Event;
+import com.scqrs.core.annotation.EventType;
 
-@Event(bufferSize=1024)
-public class HelloEvent {
+@Event(type = EventType.ORDER)
+public class ByeEvent {
+
 
     private String value;
     
-    public HelloEvent() {
+    public ByeEvent() {
         
     }
     
-    public HelloEvent(String value) {
+    public ByeEvent(String value) {
         this.value = value;
     }
 

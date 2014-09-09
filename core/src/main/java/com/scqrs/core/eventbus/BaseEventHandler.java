@@ -3,20 +3,31 @@ package com.scqrs.core.eventbus;
 import java.lang.reflect.Method;
 
 import com.lmax.disruptor.EventHandler;
+import com.scqrs.core.annotation.EventType;
 
 public class BaseEventHandler implements EventHandler<BaseEvent> {
 
-    private RegistedEventHandler registedEventHandler;
+    private EventType eventType;
+    private RegistedEventHandler[] registedEventHandlers;
     
-    public BaseEventHandler(RegistedEventHandler registedEventHandler) {
-        this.registedEventHandler = registedEventHandler;
+    public BaseEventHandler(EventType eventType, RegistedEventHandler... registedEventHandlers) {
+        this.eventType = eventType;
+        this.registedEventHandlers = registedEventHandlers;
     }
     
     public void onEvent(BaseEvent event, long sequence, boolean endOfBatch) {
-//        System.out.println("Using thread: "+Thread.currentThread().getName() + ", id: " + Thread.currentThread().getId());
-//        System.out.println("Event Value: " + event.getEvent() +  " , sequence: " + sequence + " , endOfBatch: " + endOfBatch);
-        Object eventHandler = registedEventHandler.getEventHandlerBean();
         Object eventObject = event.getEvent();
+        if(EventType.ORDER.equals(eventType)) {
+            for(RegistedEventHandler eventHandler : registedEventHandlers) {
+                execute(eventObject, eventHandler);
+            }
+        } else {
+           execute(eventObject, registedEventHandlers[0]); 
+        }
+    }
+    
+    private void execute(Object eventObject, RegistedEventHandler registedEventHandler) {
+        Object eventHandler = registedEventHandler.getEventHandlerBean();
         Class<?> eventHandlerClass = eventHandler.getClass();
         String methodName = registedEventHandler.getMethod();
         Class<?> type = registedEventHandler.getParameterType();
@@ -28,7 +39,7 @@ public class BaseEventHandler implements EventHandler<BaseEvent> {
                     + " the eventHandlerClass is " + eventHandlerClass
                     + ", the method is " + methodName
                     + ", the type is " + type);
-        }
+        }        
     }
 
 }

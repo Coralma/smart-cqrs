@@ -15,6 +15,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Event {
-
+    
     EventType type() default EventType.CONCURRENCY;
+    
+    int bufferSize() default 1024;
 }

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import com.scqrs.core.annotation.EventHandler;
+import com.scqrs.core.annotation.EventType;
+import com.scqrs.core.util.EventUtils;
 
 /**
  * EventBusPostProcessor registers Spring beans with EventBus. All beans
@@ -40,10 +42,19 @@ public class EventBusPostProcessor implements BeanPostProcessor {
                     if(types.length != 1) {
                         throw new RuntimeException("The eventHandler must define only one event.");
                     }
-                    // register it with the event bus
-                    eventBus.register(types[0], bean, method.getName());
-                    log.trace(
-                            "Bean {} containing method {} was subscribed to {}",
+                    Class<?> type = types[0];
+                    EventType eventType = EventUtils.getEventType(type);
+                    // if the eventType is order, the eventBus will keep the order index.
+                    if(eventType.equals(EventType.ORDER)) {
+                        EventHandler eventHanderAnnotation = (EventHandler) annotation;
+                        int order = eventHanderAnnotation.order();
+                        // register it with the event bus with order
+                        eventBus.register(type, bean, method.getName(),order);
+                    } else {
+                        // register it with the event bus
+                        eventBus.register(type, bean, method.getName());
+                    }
+                    log.trace("Bean {} containing method {} was subscribed to {}",
                             new Object[] { beanName, method.getName(),
                                     EventBus.class.getCanonicalName() });
                     return bean;
@@ -53,6 +64,17 @@ public class EventBusPostProcessor implements BeanPostProcessor {
 
         return bean;
     }
+    
+//    private EventType getEventType(Class<?> type) {
+//        Annotation[] annotations = type.getAnnotations();
+//        for(Annotation annotation : annotations) {
+//            if (annotation.annotationType().equals(Event.class)) {
+//                Event event = (Event)annotation;
+//                return event.type();
+//            }
+//        }
+//        return null;
+//    }
 
     @Autowired
     private EventBus eventBus;

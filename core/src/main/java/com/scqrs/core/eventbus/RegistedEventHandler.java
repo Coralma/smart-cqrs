@@ -5,11 +5,19 @@ public class RegistedEventHandler {
     private Object eventHandlerBean;
     private String method;
     private Class<?> parameterType;
+    private int order;
     
     public RegistedEventHandler(Object bean, String method, Class<?> parameterType) {
         this.eventHandlerBean = bean;
         this.method = method;
         this.parameterType = parameterType;
+    }
+    
+    public RegistedEventHandler(Object bean, String method, Class<?> parameterType, int order) {
+        this.eventHandlerBean = bean;
+        this.method = method;
+        this.parameterType = parameterType;
+        this.order = order;
     }
     /**
      * @return the eventHandlerBean
@@ -46,5 +54,19 @@ public class RegistedEventHandler {
      */
     public void setParameterType(Class<?> parameterType) {
         this.parameterType = parameterType;
+    }
+
+    /**
+     * @return the order
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * @param order the order to set
+     */
+    public void setOrder(int order) {
+        this.order = order;
     }
 }
