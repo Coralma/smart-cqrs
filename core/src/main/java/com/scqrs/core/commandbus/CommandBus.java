@@ -9,17 +9,13 @@ public class CommandBus {
 
     private final ConcurrentMap<Class<?>, RegistedCommandHandler> commandHandlerPool = Maps.newConcurrentMap();
 
-    public CommandBus() {
-        System.out.println("init CommandBus.");
-    }
-    
-    public void post(Object command) {
+    public Object post(Object command) {
         Class<?> commandClass = command.getClass();
         RegistedCommandHandler registedCommandHandler = commandHandlerPool.get(commandClass);
         if(registedCommandHandler == null) {
             new RuntimeException("The command handler of " + commandClass + " didn't define.");
         }
-        execute(command, registedCommandHandler);
+        return execute(command, registedCommandHandler);
     }
 
     public void register(Class<?> commandClass, RegistedCommandHandler handler) {
@@ -32,19 +28,20 @@ public class CommandBus {
         
     }
 
-    private void execute(Object eventObject, RegistedCommandHandler registedCommandHandler) {
+    private Object execute(Object eventObject, RegistedCommandHandler registedCommandHandler) {
         Object eventHandler = registedCommandHandler.getCommandHandlerBean();
         Class<?> eventHandlerClass = eventHandler.getClass();
         String methodName = registedCommandHandler.getMethod();
         Class<?>[] types = registedCommandHandler.getParameterTypes();
         try {
             Method method = eventHandlerClass.getMethod(methodName, types);
-            method.invoke(eventHandler, eventObject);
+            Object returnObject = method.invoke(eventHandler, eventObject);
+            return returnObject;
         } catch (Exception e) {
             throw new RuntimeException("EventHandler initialize error with"
                     + " the eventHandlerClass is " + eventHandlerClass
                     + ", the method is " + methodName
-                    + ", the type is " + types);
-        }        
+                    + ", the type is " + types, e);
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.scqrs.sample.command;
 
 public class CreateUserCommand {
 
+    private String uniqueId;
     private String userName;
     private String password;
     /**
@@ -27,5 +28,17 @@ public class CreateUserCommand {
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+    /**
+     * @return the uniqueId
+     */
+    public String getUniqueId() {
+        return uniqueId;
+    }
+    /**
+     * @param uniqueId the uniqueId to set
+     */
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 }

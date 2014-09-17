@@ -24,11 +24,11 @@ public class EventExecuteTest extends EventAbstractTest{
         
         // performance test
         Stopwatch sw = Stopwatch.createStarted(); 
-        int number = 100;
+        int number = 1000000;
         for(int i=0; i < number; i++) {
             eventBus.post(new HelloEvent("Performance test! Number is : " + i));
         }
         System.out.println("***Post " + number + " posts take time: " + sw);
-        Thread.sleep(10000l);
+        Thread.sleep(100000l);
     }
 }

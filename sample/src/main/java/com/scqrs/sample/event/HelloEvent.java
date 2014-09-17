@@ -2,7 +2,7 @@ package com.scqrs.sample.event;
 
 import com.scqrs.core.annotation.Event;
 
-@Event
+@Event(bufferSize = 4096)
 public class HelloEvent {
 
     private String value;
