@@ -1,4 +1,4 @@
-package com.scqrs.core.eventbus;
+package com.scqrs.core.processor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -9,16 +9,19 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
+import com.scqrs.core.annotation.CommandHandler;
 import com.scqrs.core.annotation.EventHandler;
 import com.scqrs.core.annotation.EventType;
+import com.scqrs.core.commandbus.CommandBus;
+import com.scqrs.core.commandbus.RegistedCommandHandler;
+import com.scqrs.core.eventbus.EventBus;
 import com.scqrs.core.util.EventUtils;
 
 /**
- * EventBusPostProcessor registers Spring beans with EventBus. 
- * All beans containing @EventBus annotation are registered. 
- * It only used in eventbus-context.xml.
+ * EventBusPostProcessor registers Spring beans with EventBus and commonBus. All beans
+ * containing @EventBus and @CommandBus annotation are registered.
  */
-public class EventBusPostProcessor implements BeanPostProcessor {
+public class HandlerBeanPostProcessor implements BeanPostProcessor {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -60,6 +63,18 @@ public class EventBusPostProcessor implements BeanPostProcessor {
                                     EventBus.class.getCanonicalName() });
                     return bean;
                 }
+                // handler the common bus
+                if (annotation.annotationType().equals(CommandHandler.class)) {
+                    Class<?>[] types = method.getParameterTypes();
+                    // currently the command only support one parameter.
+                    Class<?> type = types[0];
+                    RegistedCommandHandler commandHandler = new RegistedCommandHandler();
+                    commandHandler.setCommandHandlerBean(bean);
+                    commandHandler.setMethod(method.getName());
+                    commandHandler.setParameterTypes(types);
+                    commandBus.register(type, commandHandler);
+                    return bean;
+                }
             }
         }
 
@@ -68,4 +83,7 @@ public class EventBusPostProcessor implements BeanPostProcessor {
 
     @Autowired
     private EventBus eventBus;
+
+    @Autowired
+    private CommandBus commandBus;
 }

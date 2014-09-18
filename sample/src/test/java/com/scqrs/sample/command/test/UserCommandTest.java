@@ -9,6 +9,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.scqrs.core.commandbus.CommandBus;
+import com.scqrs.core.repository.Repository;
+import com.scqrs.sample.aggregate.UserAggregate;
 import com.scqrs.sample.command.CreateUserCommand;
 
 
@@ -19,6 +21,9 @@ public class UserCommandTest {
     @Autowired
     public CommandBus commandBus;
     
+    @Autowired
+    public Repository repository;
+    
     @Test
     public void testCase() throws Exception {
         CreateUserCommand user = new CreateUserCommand();
@@ -26,6 +31,8 @@ public class UserCommandTest {
         user.setUserName("Coral");
         user.setPassword("Password1");
         commandBus.post(user);
+        
+        repository.load(user.getUniqueId(), UserAggregate.class);
         Thread.sleep(1000000l);
     }
 }

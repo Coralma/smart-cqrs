@@ -10,17 +10,17 @@ import com.scqrs.core.aggregate.Aggregate;
 
 public class Repository {
 
-    private int bufferSize = 1024;
-    private RepositoryHandler aggregateEventHandler;
+//    private int bufferSize = 1024;
+    private int bufferSize;
+    private EventStorage eventStorage;
     private Disruptor<AggregateEvent> disruptor;
     
-    public Repository() {
-    }
-    
-    public Repository(RepositoryHandler aggregateEventHandler) {
+    public Repository(EventStorage eventStorage, int bufferSize) {
+        this.eventStorage = eventStorage;
+        this.bufferSize = bufferSize;
         disruptor = new Disruptor<AggregateEvent>(new AggregateEventFactory(), 
                 bufferSize, Executors.newCachedThreadPool(), ProducerType.SINGLE, new BlockingWaitStrategy());
-        disruptor.handleEventsWith(aggregateEventHandler);
+        disruptor.handleEventsWith(eventStorage);
         disruptor.start();
     }
     
@@ -33,8 +33,14 @@ public class Repository {
         producer.onData(aggregate);
     }
     
-    public Aggregate load(Object aggregateId) {
-        return null;
+    public <T extends Aggregate> T load(Object aggregateId, Class<T> aggregateClass) {
+        return eventStorage.load(aggregateId, aggregateClass);
     }
-    
+
+    /**
+     * @return the bufferSize
+     */
+    public int getBufferSize() {
+        return bufferSize;
+    }
 }

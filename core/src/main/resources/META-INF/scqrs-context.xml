@@ -21,13 +21,14 @@
 	<context:spring-configured />
 	
 	<bean id="commandBus" class="com.scqrs.core.commandbus.CommandBus"/>
-	<bean id="commandBusPostProcessor" class="com.scqrs.core.commandbus.CommandBusPostProcessor"/>
 	<bean id="eventBus" class="com.scqrs.core.eventbus.EventBus"/>
-	<bean id="eventBusPostProcessor" class="com.scqrs.core.eventbus.EventBusPostProcessor"/>
-	<bean id="aggregateEventHandler" class="com.scqrs.core.repository.FileRepositoryHandler">
+	<bean id="handlerBeanPostProcessor" class="com.scqrs.core.processor.HandlerBeanPostProcessor"/>
+	
+	<bean id="eventStorage" class="com.scqrs.core.repository.FileEventStorage">
 		<property name="eventBus" ref="eventBus"></property>
 	</bean>
 	<bean id="repository" class="com.scqrs.core.repository.Repository">
-		<constructor-arg index="0" ref="aggregateEventHandler" />
+		<constructor-arg index="0" ref="eventStorage" />
+		<constructor-arg index="1" value="2048" />
 	</bean>	
 </beans>

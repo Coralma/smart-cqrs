@@ -29,9 +29,4 @@ local.properties
 # PDT-specific
 .buildpath
 
-mocha-foundation/target
-mocha-vaadin-framework/target
-projects/cooperate/target
-projects/crm/target
-projects/homepage/target
-projects/officeAdmin/target
+sample/events/
