@@ -12,7 +12,7 @@ import com.scqrs.sample.event.HelloEvent;
 @Component
 public class SayHiEventHandler {
 
-//    @EventHandler
+    @EventHandler
     public void handleHelloEvent(HelloEvent event) {
         System.out.println("SayHiEventHandler: " + event.getValue());
         try {

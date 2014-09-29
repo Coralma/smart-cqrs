@@ -19,16 +19,8 @@
         http://cxf.apache.org/schemas/configuration/http-conf.xsd">
 
 	<context:spring-configured />
-	
-	<bean id="commandBus" class="com.scqrs.core.commandbus.CommandBus"/>
+
 	<bean id="eventBus" class="com.scqrs.core.eventbus.EventBus"/>
-	<bean id="handlerBeanPostProcessor" class="com.scqrs.core.processor.HandlerBeanPostProcessor"/>
-	
-	<bean id="eventStorage" class="com.scqrs.core.repository.FileEventStorage">
-		<property name="eventBus" ref="eventBus"></property>
-	</bean>
-	<bean id="repository" class="com.scqrs.core.repository.Repository">
-		<constructor-arg index="0" ref="eventStorage" />
-		<constructor-arg index="1" value="2048" />
-	</bean>	
+	<bean id="eventBusPostProcessor" class="com.scqrs.core.eventbus.EventBusPostProcessor"/>
+
 </beans>

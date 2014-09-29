@@ -19,6 +19,7 @@ import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.scqrs.core.annotation.EventType;
+import com.scqrs.core.repository.EventRepository;
 import com.scqrs.core.util.EventUtils;
 
 /**
@@ -30,6 +31,7 @@ public class EventBus {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
     protected ConcurrentMap<Class<?>, List<RegistedEventHandler>> handlesMap = Maps.newConcurrentMap();
     protected ConcurrentMap<Class<?>, Disruptor<BaseEvent>> disruptorPool = Maps.newConcurrentMap();
+    protected EventRepository eventRepository;
 
     public void register(Class<?> event, Object bean, String method) {
         this.register(event, bean, method, EventType.CONCURRENCY, 0);
@@ -58,6 +60,10 @@ public class EventBus {
             }
             eventDisruptor = createDisruptor(eventClass, registedEventHandlers);
             disruptorPool.put(eventClass, eventDisruptor);
+        }
+        // check whether has event Repository definition.
+        if(eventRepository != null) {
+        	eventRepository.save(event);
         }
         RingBuffer<BaseEvent> ringBuffer = eventDisruptor.getRingBuffer();
         BaseEventProducer producer = new BaseEventProducer(ringBuffer);
@@ -97,4 +103,18 @@ public class EventBus {
         }; 
         return orderings.immutableSortedCopy(registedEventHandlers);
     }
+
+	/**
+	 * @return the eventRepository
+	 */
+	public EventRepository getEventRepository() {
+		return eventRepository;
+	}
+
+	/**
+	 * @param eventRepository the eventRepository to set
+	 */
+	public void setEventRepository(EventRepository eventRepository) {
+		this.eventRepository = eventRepository;
+	}
 }

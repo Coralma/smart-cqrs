@@ -19,7 +19,12 @@
         http://cxf.apache.org/schemas/configuration/http-conf.xsd">
 
 	<context:spring-configured />
-<!-- 	<import resource="classpath:META-INF/eventbus-context.xml"/> -->
-	<import resource="classpath:META-INF/simple-scqrs-context.xml"/>
-	<context:component-scan base-package="com.scqrs.sample.event"></context:component-scan>
+
+	<bean id="eventRepository" class="com.scqrs.core.repository.FileEventRepository"/>	
+	<bean id="eventBus" class="com.scqrs.core.eventbus.EventBus">
+		<property name="eventRepository" ref="eventRepository"></property>
+	</bean>
+	<bean id="eventBusPostProcessor" class="com.scqrs.core.eventbus.EventBusPostProcessor"/>
+	
+
 </beans>

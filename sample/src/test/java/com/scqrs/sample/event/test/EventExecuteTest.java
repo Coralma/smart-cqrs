@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.common.base.Stopwatch;
 import com.scqrs.core.eventbus.EventBus;
+import com.scqrs.core.eventbus.EventFactory;
 import com.scqrs.sample.event.HelloEvent;
 
 public class EventExecuteTest extends EventAbstractTest{
@@ -20,15 +21,8 @@ public class EventExecuteTest extends EventAbstractTest{
     
     @Test
     public void testEvent() throws Exception {
-        eventBus.post(new HelloEvent("Hello world!"));
-        
-        // performance test
-        Stopwatch sw = Stopwatch.createStarted(); 
-        int number = 1000000;
-        for(int i=0; i < number; i++) {
-            eventBus.post(new HelloEvent("Performance test! Number is : " + i));
-        }
-        System.out.println("***Post " + number + " posts take time: " + sw);
-        Thread.sleep(100000l);
+    	HelloEvent event = EventFactory.createEvent(HelloEvent.class);
+    	event.setValue("Hello world for eventBus!");
+        eventBus.post(event);
     }
 }

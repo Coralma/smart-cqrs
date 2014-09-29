@@ -1,9 +1,14 @@
 package com.scqrs.core.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.UUID;
+
+import org.springframework.util.Assert;
 
 import com.scqrs.core.annotation.Event;
 import com.scqrs.core.annotation.EventType;
+import com.scqrs.core.annotation.UniqueId;
 
 public class EventUtils {
 
@@ -29,7 +34,46 @@ public class EventUtils {
         return 1024;
     }
     
-    public static void execution() {
-        
+    public static Object getUniqueId(Object event) {
+    	Assert.notNull(event);
+    	for(Field field : event.getClass().getDeclaredFields()) {
+    		for(Annotation annotation : field.getDeclaredAnnotations()) {
+    			if (annotation.annotationType().equals(UniqueId.class)) {
+                    try {
+                    	field.setAccessible(true);
+						return field.get(event);
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+                }
+    		}
+    	}
+    	return null;
+    }
+    
+    public static Object initUniqueId(Object event) {
+    	Assert.notNull(event);
+    	for(Field field : event.getClass().getDeclaredFields()) {
+    		for(Annotation annotation : field.getDeclaredAnnotations()) {
+    			if (annotation.annotationType().equals(UniqueId.class)) {
+                    try {
+                    	field.setAccessible(true);
+						field.set(event, generateUniqueId());
+						return event;
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+                }
+    		}
+    	}
+    	return null;
+    }
+    
+    public static Object generateUniqueId() {
+    	return UUID.randomUUID().toString();
     }
 }
